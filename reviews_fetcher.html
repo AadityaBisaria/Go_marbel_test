@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reviews Fetcher</title>
+</head>
+<body>
+    <h1>Fetch Reviews</h1>
+    <form id="fetch-form">
+        <label for="website">Enter Website URL:</label>
+        <input type="text" id="website" name="website" required>
+        <button type="submit">Fetch Reviews</button>
+    </form>
+
+    <div id="reviews">
+        <h2>Reviews:</h2>
+        <ul id="reviews-list"></ul>
+    </div>
+
+    <script>
+        document.getElementById('fetch-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const website = document.getElementById('website').value;
+            
+            try {
+                const response = await fetch(`http://127.0.0.1:8000/api/reviews?page_url=${encodeURIComponent(website)}`);
+                if (!response.ok) throw new Error('Failed to fetch reviews');
+
+                const data = await response.json();
+                const reviewsList = document.getElementById('reviews-list');
+                reviewsList.innerHTML = '';
+
+                data.reviews.forEach(review => {
+                    const li = document.createElement('li');
+                    li.textContent = `Title: ${review.title}, Rating: ${review.rating}, Reviewer: ${review.reviewer}`;
+                    reviewsList.appendChild(li);
+                });
+
+            } catch (error) {
+                console.error(error);
+                alert('Error fetching reviews');
+            }
+        });
+    </script>
+</body>
+</html>
