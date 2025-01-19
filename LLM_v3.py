@@ -10,21 +10,21 @@ import time
 
 app = FastAPI()
 
-# Selenium WebDriver setup
+
 def init_browser():
-    # Set up Chrome options
+  
     chrome_options = Options()
     chrome_options.add_argument("--headless")  
     chrome_options.add_argument("--disable-gpu")
     chrome_options.add_argument("--no-sandbox")
     
-    # Set the path for ChromeDriver
+  
     service = Service(r"C:\Users\Admin\AppData\Local\Google\Chrome SxS\Application\chromedriver.exe")
     driver = webdriver.Chrome(service=service, options=chrome_options)
 
     return driver
 
-# Function to fetch HTML content
+
 def fetch_html(url):
     try:
         print(f"Fetching URL: {url}")
@@ -32,7 +32,7 @@ def fetch_html(url):
         print("we got the driver in it")
         driver.get(url)
         print(" ur L")
-        time.sleep(2)  # Allow some time for the page to load
+        time.sleep(2)  
         html_content = driver.page_source
         driver.quit()
         print("HTML fetched successfully")
@@ -41,7 +41,7 @@ def fetch_html(url):
         print(f"Selenium error: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Error fetching HTML: {str(e)}")
 
-# Function to query Hermes for CSS selectors
+
 def query_hermes(prompt, max_tokens=5000):
     url = "http://127.0.0.1:1234/v1/completions"
     headers = {"Content-Type": "application/json"}
@@ -120,11 +120,10 @@ def fetch_and_extract_reviews(page_url: str):
                     "reviewer": reviewer
                 })
 
-            # Check for pagination
             try:
                 next_page = driver.find_element(By.CSS_SELECTOR, css_selectors.get("next_page", ""))
                 next_page.click()
-                time.sleep(2)  # Allow time for the next page to load
+                time.sleep(2) 
             except NoSuchElementException:
                 break
 
@@ -134,7 +133,7 @@ def fetch_and_extract_reviews(page_url: str):
         print(f"Selenium error: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Error extracting reviews: {str(e)}")
 
-# API Endpoint to fetch reviews
+
 @app.get("/api/reviews")
 def get_reviews(page_url: str):
     try:
